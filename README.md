@@ -1,2 +1,2 @@
 # FashionSearch
-Deep Learning Model for fashion recommendation
+Deep Learning Model for fashion recommendations.
