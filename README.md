@@ -3,13 +3,13 @@ Deep Learning Model for fashion category and attribute recommendation.
 
 Download models here: https://drive.google.com/drive/folders/1gNX_sO2kaksyZvnmwA-AkhLiyJSACJ6I
 
-Method1: whole.pky 
+Method1 Model: whole.pky 
 
-Method2: resnetFixedFinal.pkl
+Method2 Model: resnetFixedFinal.pkl
 
-Extra (Trained on bad data): multiresnet2Epoch.pkl
+Extra Model (Trained on bad data): multiresnet2Epoch.pkl
 
-Method 1:
+Method 1 Files:
 -src/base_networks.py
 -src/dataset.py
 -src/lm_networks.py
@@ -17,7 +17,7 @@ Method 1:
 -src/train.py
 -src/conf
 
-Method 2:
+Method 2 Files:
 -src/multitask_model.py
 -src/our_train.py
 -src/predict.py
