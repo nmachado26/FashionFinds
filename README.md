@@ -14,7 +14,7 @@ Method 1:
 -src/train.py
 -src/conf
 
-Method 2:
--src/multitask_model.py
--src/our_train.py
+Method 2 (bulk of original code):
+-src/multitask_model.py (final train/model file)
+-src/our_train.py (prior train file. Depracated but submitted just in case)
 -src/predict.py
