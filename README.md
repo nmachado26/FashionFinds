@@ -17,13 +17,7 @@ Method 1 Files:
 -src/train.py
 -src/conf
 
-<<<<<<< HEAD
-Method 2 (bulk of original code):
+Method 2 Files (bulk of original code):
 -src/multitask_model.py (final train/model file)
 -src/our_train.py (prior train file. Depracated but submitted just in case)
-=======
-Method 2 Files:
--src/multitask_model.py
--src/our_train.py
->>>>>>> 88a7908f3519adfd1f7f8a963c2ddfaeae6038d6
 -src/predict.py
