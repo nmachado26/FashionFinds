@@ -418,8 +418,8 @@ if __name__ == '__main__':
     # Decay LR by a factor of 0.1 every 7 epochs
     exp_lr_scheduler = lr_scheduler.StepLR(optimizer_ft, step_size=10, gamma=0.1)
     model_ft1 = train_model(model_1, criterion, optimizer_ft, exp_lr_scheduler,
-                       num_epochs=10)
+                       num_epochs=2)
     print("done training!")
     #saving model
-    modelname = 'resnetFixed.pkl'
+    modelname = 'resnetFixedFinal.pkl'
     torch.save(model_ft1.state_dict(), 'models/' + modelname)

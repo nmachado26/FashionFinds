@@ -7,6 +7,13 @@ from src import const
 from src.utils import parse_args_and_merge_const
 from tensorboardX import SummaryWriter
 import os
+import numpy
+
+from sklearn.model_selection import train_test_split
+
+
+#kmeans:
+#from sklearn.cluster import kmeans
 
 
 if __name__ == '__main__':
@@ -34,6 +41,7 @@ if __name__ == '__main__':
     total_step = len(train_dataloader)
     step = 0
     for epoch in range(const.NUM_EPOCH):
+        print("startin epochs")
         net.train()
         for i, sample in enumerate(train_dataloader):
             step += 1
@@ -106,3 +114,81 @@ if __name__ == '__main__':
         learning_rate *= const.LEARNING_RATE_DECAY
         optimizer = torch.optim.Adam(net.parameters(), lr=learning_rate)
 
+
+
+    #NOTE: Prediction implementation, following training the model "net" using the saved model whole.pkl
+
+    pred_net = const.USE_NET()
+    pred_net = net.to(const.device)
+    pred_net.load_state_dict(torch.load('models/whole.pkl'))
+    pred_net.eval()
+    evaluator = const.EVALUATOR()
+
+    #use for loop simply to get first sample in dataloader (torch dataloader cannot be indexed) to predict on
+    #to simulate an input picture (chose val_dataloader picture simply because the image is already preprocessed)
+    #break after first iteration
+    for i, sample in enumerate(val_dataloader):
+        for key in sample:
+            sample[key] = sample[key].to(const.device)
+        output = pred_net(sample)
+        evaluator.add(output, sample)
+        ret = evaluator.evaluate()
+
+        #output is a map with values to all features trained on (Category, attributes, landmarks, etc)
+        #to see prediction on other features, simply use correct key as found in forward() function in model.
+        #cat = output['category_name']
+        attrs = output['attr_output'] #predicted attribute array
+        np_arr = attrs.cpu().detach().numpy()
+        print("output: ", np_arr)
+        break
+
+
+
+    #NOTE: nearest neighbors implementation
+
+    df = pd.read_csv(base_path + const.USE_CSV)
+    train_df = df[df['evaluation_status'] == 'train']
+    X = df['image_name']
+    Y_list = list(df)
+    Y_list.remove('image_name')
+    y = df[Y_list]
+
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.20, random_state=42)
+
+    attributes = ['attr_%d'%i for i in range(1000)]
+    attr_train = y_train[attributes]
+    attr_nodes = attr_train.shape[1]
+    attr_train = attr_train.values.tolist()
+
+    #hardcoded an image prediction of animal and animal print attributes turned on in one hot. Replace "indexes" with the converted predicted attribute array
+    indexes = [18,19]
+    test_arr = []
+    for i in range(1000):
+        if i in indexes:
+            test_arr.append(1)
+        else:
+         test_arr.append(0)
+    test_arr_t = torch.from_numpy(numpy.array(test_arr)).float()
+
+    #for norm implementation, uncomment below:
+    #min_dist = float('inf')
+    #min_arr = None
+    #min_arrs = []
+    tups = dict()
+    for i, attr_arr in enumerate(attr_train):
+        attr_arr_t = torch.from_numpy(numpy.array(attr_arr)).float()
+        dist = numpy.sum(numpy.absolute(numpy.subtract(numpy.array(test_arr), numpy.array(attr_arr))))
+        tups[i] = dist
+        #for norm implementation, uncomment below:
+        #dist = torch.norm(test_arr_t - attr_arr_t)
+        #if dist < min_dist:
+        #    tups[i] = dist
+        #    min_dist = dist
+        #    min_arrs.append(X[i])
+        #    min_arr = i
+
+    #print topk where k = 10
+    for i, w in enumerate(sorted(tups, key=tups.get)):
+        if i < 10:
+            print('name: ', X[w])
+            print('dist: ', tups[w])
