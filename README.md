@@ -19,7 +19,7 @@ Method 1 Files:
 
 Method 2 Files (bulk of original code):
 -src/multitask_model.py (final train/model file)
--src/our_train.py (prior train file. Depracated but submitted just in case)
+-src/our_train.py (prior train file. Deprecated but submitted just in case)
 -src/predict_method2.py
 
 Final Submission Update:
